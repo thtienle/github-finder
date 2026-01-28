@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { FaGithubAlt } from "react-icons/fa";
 
 const UserSearch = () => {
   const [userName, setUsername] = useState("");
@@ -44,7 +45,16 @@ const UserSearch = () => {
       {data && (
         <div className="user-card">
           <img src={data.avatar_url} alt={data.name} className="avatar" />
-          <h2>{data.name}</h2>
+          <h2>{data.name || data.login}</h2>
+          <p className="bio">{data.bio}</p>
+          <a
+            href={data.html_url}
+            className="profile-btn"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaGithubAlt /> View Github Profile
+          </a>
         </div>
       )}
     </>

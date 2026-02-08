@@ -2,10 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { fetchGithubUser } from "../api/github";
 import UserCard from "./UserCard";
+import { FaClock, FaUser } from "react-icons/fa";
 
 const UserSearch = () => {
   const [userName, setUsername] = useState("");
   const [submittedUsername, setSubmittedUsername] = useState("");
+  const [recentUsers, setRecentUsers] = useState<string[]>([]);
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["users", submittedUsername],
@@ -16,7 +18,16 @@ const UserSearch = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSubmittedUsername(userName.trim());
+    const trimmed = userName.trim();
+
+    if (!trimmed) return;
+
+    setSubmittedUsername(trimmed);
+    setRecentUsers((prev) => {
+      const updated = [trimmed, ...prev.filter((u) => u !== trimmed)];
+
+      return updated.slice(0, 5);
+    });
   };
   return (
     <>
@@ -34,6 +45,29 @@ const UserSearch = () => {
       {isError && <p className="status error">{error.message}</p>}
 
       {data && <UserCard user={data} />}
+
+      {recentUsers.length > 0 && (
+        <div className="recent-searches">
+          <div className="recent-header">
+            <FaClock />
+            <h3>Recent Searches</h3>
+          </div>
+          <ul>
+            {recentUsers.map((user) => (
+              <li key={user}>
+                <button
+                  onClick={() => {
+                    setUsername(user);
+                    setSubmittedUsername(user);
+                  }}
+                >
+                  <FaUser className="user-icon" /> {user}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </>
   );
 };

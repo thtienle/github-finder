@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { fetchGithubUser } from "../api/github";
 import UserCard from "./UserCard";
-import { FaClock, FaUser } from "react-icons/fa";
+import RecentSearches from "./RecentSearch";
 
 const UserSearch = () => {
   const [userName, setUsername] = useState("");
@@ -47,26 +47,13 @@ const UserSearch = () => {
       {data && <UserCard user={data} />}
 
       {recentUsers.length > 0 && (
-        <div className="recent-searches">
-          <div className="recent-header">
-            <FaClock />
-            <h3>Recent Searches</h3>
-          </div>
-          <ul>
-            {recentUsers.map((user) => (
-              <li key={user}>
-                <button
-                  onClick={() => {
-                    setUsername(user);
-                    setSubmittedUsername(user);
-                  }}
-                >
-                  <FaUser className="user-icon" /> {user}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <RecentSearches
+          users={recentUsers}
+          onSelect={(username) => {
+            setUsername(username);
+            setSubmittedUsername(username);
+          }}
+        />
       )}
     </>
   );

@@ -18,7 +18,7 @@ const UserSearch = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   // Query to fetch specific user
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["users", submittedUsername],
     queryFn: () => fetchGithubUser(submittedUsername),
     // !! turn into a boolean
@@ -67,16 +67,25 @@ const UserSearch = () => {
           {showSuggestions && suggestions?.length > 0 && (
             <ul className="suggestions">
               {suggestions.slice(0, 5).map((user: GithubUser) => (
-                <>
-                  <li key={user.login}>
-                    <img
-                      src={user.avatar_url}
-                      alt={user.login}
-                      className="avatar-xs"
-                    />{" "}
-                    {user.login}
-                  </li>
-                </>
+                <li
+                  key={user.login}
+                  onClick={() => {
+                    setUsername(user.login);
+                    setShowSuggestions(false);
+                    if (submittedUsername !== user.login) {
+                      setSubmittedUsername(user.login);
+                    } else {
+                      refetch();
+                    }
+                  }}
+                >
+                  <img
+                    src={user.avatar_url}
+                    alt={user.login}
+                    className="avatar-xs"
+                  />{" "}
+                  {user.login}
+                </li>
               ))}
             </ul>
           )}

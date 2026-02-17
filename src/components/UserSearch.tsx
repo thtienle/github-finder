@@ -26,6 +26,7 @@ const UserSearch = () => {
     if (!trimmed) return;
 
     setSubmittedUsername(trimmed);
+    setUsername("");
     setRecentUsers((prev) => {
       const updated = [trimmed, ...prev.filter((u) => u !== trimmed)];
 
